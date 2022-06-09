@@ -5,8 +5,9 @@ import androidx.navigation.fragment.findNavController
 import com.berker.sherlockofitunes.R
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentListViewModel>(
     FragmentContentListBinding::inflate
 ) {
