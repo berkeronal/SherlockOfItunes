@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 abstract class BaseFragment<VB : ViewDataBinding, out VM : BaseViewModel>(
     private val inflate: Inflate<VB>
 ) : Fragment() {
-
     private var _binding: VB? = null
     protected val binding get() = _binding!!
 
@@ -37,7 +36,6 @@ abstract class BaseFragment<VB : ViewDataBinding, out VM : BaseViewModel>(
         binding.lifecycleOwner = viewLifecycleOwner
         initUi()
         initReceivers()
-
     }
 
     override fun onDestroyView() {
