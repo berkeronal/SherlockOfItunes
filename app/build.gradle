@@ -88,4 +88,6 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 
+    //paging
+    implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
 }
