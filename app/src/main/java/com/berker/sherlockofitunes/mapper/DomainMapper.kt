@@ -1,5 +1,6 @@
 package com.berker.sherlockofitunes.mapper
 
+import com.berker.sherlockofitunes.common.extension.replaceIfNull
 import com.berker.sherlockofitunes.data.remote.dto.ContentDTO
 import com.berker.sherlockofitunes.data.remote.dto.ContentResultDTO
 import com.berker.sherlockofitunes.domain.model.Content
@@ -11,15 +12,15 @@ class DomainMapper {
         dataModel: ContentDTO
     ): Content = with(dataModel) {
         Content(
-            artistId = artistId ?: -1,
-            artistName = artistName ?: "",
-            artworkUrl100 = artworkUrl100 ?: "",
-            trackCount = trackCount ?: -1,
-            trackExplicitness = trackExplicitness ?: "",
-            trackId = trackId ?: -1,
-            collectionName = collectionName ?: "",
-            collectionPrice = collectionPrice ?: 0.0,
-            releaseDate = releaseDate ?: ""
+            artistId = artistId.replaceIfNull(),
+            artistName = artistName.replaceIfNull(),
+            artworkUrl100 = artworkUrl100.replaceIfNull(),
+            trackCount = trackCount.replaceIfNull(),
+            trackExplicitness = trackExplicitness.replaceIfNull(),
+            trackId = trackId.replaceIfNull(),
+            collectionName = collectionName.replaceIfNull(),
+            collectionPrice = collectionPrice.replaceIfNull(),
+            releaseDate = releaseDate.replaceIfNull()
         )
     }
 
