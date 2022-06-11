@@ -13,13 +13,16 @@
         <action
             android:id="@+id/action_ContentListFragment_to_ContentDetailFragment"
             app:destination="@id/ContentDetailFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/ContentDetailFragment"
         android:name="com.berker.sherlockofitunes.presentation.contentdetail.ContentDetailFragment"
         android:label="@string/content_detail_fragment_label"
         tools:layout="@layout/fragment_content_detail">
-
+        <argument
+            android:name="sharedElementName"
+            app:argType="string" />
         <action
             android:id="@+id/action_ContentDetailFragment_to_ContentListFragment"
             app:destination="@id/ContentListFragment" />

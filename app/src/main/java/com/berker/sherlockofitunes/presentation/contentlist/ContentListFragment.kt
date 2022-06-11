@@ -1,10 +1,20 @@
 package com.berker.sherlockofitunes.presentation.contentlist
 
+import android.os.Bundle
+import android.transition.TransitionInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.berker.sherlockofitunes.R
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
+import com.berker.sherlockofitunes.presentation.contentdetail.ContentDetailFragmentArgs
+import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -12,10 +22,45 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     FragmentContentListBinding::inflate
 ) {
     override val viewModel: ContentListViewModel by viewModels()
+    private val contentListAdapter: ContentListAdapter by lazy {
+        ContentListAdapter(
+            itemClickListener = { id, view ->
+                navigateWithTransition(view, id)
+            }
+        ).apply {
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        sharedElementEnterTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun initUi() {
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_ContentListFragment_to_ContentDetailFragment)
+        initRecyclerView()
+        postponeEnterTransition()
+        (view?.parent as? ViewGroup)?.doOnPreDraw {
+            startPostponedEnterTransition()
         }
+        ViewCompat.setTransitionName(binding.imageView, "imageA")
+
+        binding.buttonFirst.setOnClickListener {
+
+        }
+    }
+
+    private fun initRecyclerView() {
+        binding.adapter = contentListAdapter
+    }
+
+    private fun navigateWithTransition(view: View, id: String) {
+        val extras = FragmentNavigatorExtras(
+            view to "imageB"
+        )
+        findNavController().navigate(
+            ContentListFragmentDirections.actionContentListFragmentToContentDetailFragment(id),extras
+        )
     }
 }
