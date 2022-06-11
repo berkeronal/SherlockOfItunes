@@ -11,18 +11,15 @@ class LocalPagingSource<T : Any>(
         val offset = (position - 1) * STARTING_INDEX
 
         return try {
-            val result = block.invoke(offset)
-
-            result?.let {
+            block.invoke(offset)?.let {
                 LoadResult.Page(
                     data = it,
                     prevKey = if (position == STARTING_INDEX) 0 else position.minus(1),
                     nextKey = position.plus(1)
                 )
-            }?: run{
+            } ?: run {
                 LoadResult.Error(Exception("Error"))
             }
-
         } catch (exception: Exception) {
             LoadResult.Error(exception)
         }
