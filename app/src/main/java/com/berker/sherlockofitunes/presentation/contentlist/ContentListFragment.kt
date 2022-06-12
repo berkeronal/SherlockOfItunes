@@ -6,21 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.berker.sherlockofitunes.common.extension.collect
 import com.berker.sherlockofitunes.common.extension.collectLast
 import com.berker.sherlockofitunes.common.extension.executeWithAction
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
-import com.berker.sherlockofitunes.domain.model.Content
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentListUiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -40,7 +42,6 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
 
     override fun initUi() {
         viewModel.getContent()
-
         initAdapter()
         initRecyclerView()
         postponeEnterTransition()
@@ -49,12 +50,23 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     override fun initReceivers() {
         super.initReceivers()
 
+        collect(contentListAdapter.loadStateFlow
+            .distinctUntilChangedBy { it.source.refresh }
+            .map {
+                it.refresh
+            }, ::setViewModelLoadState
+        )
         collectLast(viewModel.contentListUiState, ::setUiState)
         collectLast(viewModel.contentListUiState.value.contents, ::setRecyclerViewData)
 
+
     }
 
-    private fun setUiState(contentListUiState: ContentListUiState){
+    private fun setViewModelLoadState(loadState: LoadState) {
+        viewModel.setLoadState(loadState)
+    }
+
+    private fun setUiState(contentListUiState: ContentListUiState) {
         binding.executeWithAction {
             this.contentListUiState = contentListUiState
         }

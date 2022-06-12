@@ -12,4 +12,7 @@ data class ContentListUiState(
     val contentType: ContentType = ContentType.Movie,
     val contents: Flow<PagingData<ContentItemUiState>> = emptyFlow(),
     val loadState: LoadState = LoadState.Loading,
-) : BaseUiState()
+) : BaseUiState() {
+
+    fun getProgressBarVisibility() = getVisibility(isVisible = loadState is LoadState.Loading)
+}
