@@ -5,6 +5,7 @@ import com.berker.sherlockofitunes.data.remote.dto.ContentDTO
 import com.berker.sherlockofitunes.data.remote.dto.ContentResultDTO
 import com.berker.sherlockofitunes.domain.model.Content
 import com.berker.sherlockofitunes.domain.model.ContentResult
+import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
 
 class DomainMapper {
 
@@ -31,5 +32,11 @@ class DomainMapper {
             resultCount = resultCount,
             results = results.map { dataContentToDomainContent(it) }
         )
+    }
+
+    fun domainContentToDomainContentItemUiState(
+        domainModel: Content
+    ) = with(domainModel) {
+        ContentItemUiState(content = domainModel)
     }
 }
