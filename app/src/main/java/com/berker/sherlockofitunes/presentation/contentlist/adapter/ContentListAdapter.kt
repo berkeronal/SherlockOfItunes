@@ -7,11 +7,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.berker.sherlockofitunes.databinding.ItemRvContentBinding
 import com.berker.sherlockofitunes.domain.model.Content
+import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
 import com.berker.sherlockofitunes.presentation.contentlist.viewholder.ContentListViewHolder
 import javax.inject.Inject
 
 class ContentListAdapter @Inject constructor(
-) : PagingDataAdapter<Content, ContentListViewHolder>(ContentComparator()) {
+) : PagingDataAdapter<ContentItemUiState, ContentListViewHolder>(ContentComparator) {
 
     private var itemClickListener: ((String, View) -> Unit)? = null
 
@@ -23,15 +24,15 @@ class ContentListAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ContentListViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it.artistName)
+            holder.bind(it.getArtistName())
         }
     }
 
-    private class ContentComparator : DiffUtil.ItemCallback<Content>() {
-        override fun areItemsTheSame(oldItem: Content, newItem: Content) =
-            oldItem.trackId == newItem.trackId
+    object ContentComparator : DiffUtil.ItemCallback<ContentItemUiState>() {
+        override fun areItemsTheSame(oldItem: ContentItemUiState, newItem: ContentItemUiState) =
+            oldItem.getArtistName() == newItem.getArtistName()
 
-        override fun areContentsTheSame(oldItem: Content, newItem: Content) =
+        override fun areContentsTheSame(oldItem: ContentItemUiState, newItem: ContentItemUiState) =
             oldItem == newItem
     }
 

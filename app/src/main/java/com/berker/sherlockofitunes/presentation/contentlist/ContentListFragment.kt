@@ -4,18 +4,22 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.berker.sherlockofitunes.common.extension.collect
+import com.berker.sherlockofitunes.common.extension.collectLast
+import com.berker.sherlockofitunes.common.extension.executeWithAction
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
 import com.berker.sherlockofitunes.domain.model.Content
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
+import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
+import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentListUiState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -40,24 +44,29 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         initAdapter()
         initRecyclerView()
         postponeEnterTransition()
-        (view?.parent as? ViewGroup)?.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
-        ViewCompat.setTransitionName(binding.imageView, "imageA")
-
-        binding.buttonFirst.setOnClickListener {
-
-        }
     }
 
     override fun initReceivers() {
         super.initReceivers()
 
-        collect(viewModel.contentFlow, ::setRecyclerViewData)
+        collectLast(viewModel.contentListUiState, ::setUiState)
+        collectLast(viewModel.contentListUiState.value.contents, ::setRecyclerViewData)
+
     }
 
-    private suspend fun setRecyclerViewData(pagingData: PagingData<Content>) {
+    private fun setUiState(contentListUiState: ContentListUiState){
+        binding.executeWithAction {
+            this.contentListUiState = contentListUiState
+        }
+    }
+
+    private suspend fun setRecyclerViewData(pagingData: PagingData<ContentItemUiState>) {
+        (view?.parent as? ViewGroup)?.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
         contentListAdapter.submitData(pagingData)
+
+
 
         if (contentListAdapter.itemCount == 0) {
 
@@ -68,7 +77,6 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         contentListAdapter.apply {
             setItemClickListener { id, view ->
                 navigateWithTransition(view, id)
-
             }
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
@@ -76,6 +84,9 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
 
     private fun initRecyclerView() {
         binding.adapter = contentListAdapter
+
+        val layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rv.layoutManager = layoutManager
     }
 
     private fun navigateWithTransition(view: View, id: String) {
