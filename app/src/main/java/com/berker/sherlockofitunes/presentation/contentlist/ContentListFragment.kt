@@ -10,27 +10,20 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.berker.sherlockofitunes.R
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
-import com.berker.sherlockofitunes.presentation.contentdetail.ContentDetailFragmentArgs
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentListViewModel>(
     FragmentContentListBinding::inflate
 ) {
     override val viewModel: ContentListViewModel by viewModels()
-    private val contentListAdapter: ContentListAdapter by lazy {
-        ContentListAdapter(
-            itemClickListener = { id, view ->
-                navigateWithTransition(view, id)
-            }
-        ).apply {
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-    }
+
+    @Inject
+    lateinit var contentListAdapter: ContentListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         sharedElementEnterTransition =
@@ -39,6 +32,7 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     }
 
     override fun initUi() {
+        initAdapter()
         initRecyclerView()
         postponeEnterTransition()
         (view?.parent as? ViewGroup)?.doOnPreDraw {
@@ -51,6 +45,16 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         }
     }
 
+    private fun initAdapter() {
+        contentListAdapter.apply {
+            setItemClickListener { id, view ->
+                navigateWithTransition(view, id)
+
+            }
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
+    }
+
     private fun initRecyclerView() {
         binding.adapter = contentListAdapter
     }
@@ -60,7 +64,8 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
             view to "imageB"
         )
         findNavController().navigate(
-            ContentListFragmentDirections.actionContentListFragmentToContentDetailFragment(id),extras
+            ContentListFragmentDirections.actionContentListFragmentToContentDetailFragment(id),
+            extras
         )
     }
 }
