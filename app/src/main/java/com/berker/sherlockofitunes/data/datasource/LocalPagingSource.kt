@@ -8,13 +8,13 @@ class LocalPagingSource<T : Any>(
 ) : PagingSource<Int, T>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val position = params.key ?: STARTING_INDEX
-        val offset = (position - 1) * STARTING_INDEX
+        val offset = (position - 1) * 20
 
         return try {
-            block.invoke(offset)?.let {
+            block(offset)?.let {
                 LoadResult.Page(
                     data = it,
-                    prevKey = if (position == STARTING_INDEX) 0 else position.minus(1),
+                    prevKey = if (position == STARTING_INDEX) null else position.minus(1),
                     nextKey = position.plus(1)
                 )
             } ?: run {
@@ -33,6 +33,6 @@ class LocalPagingSource<T : Any>(
     }
 
     companion object {
-        private const val STARTING_INDEX = 0
+        private const val STARTING_INDEX = 1
     }
 }

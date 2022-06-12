@@ -13,7 +13,6 @@ import javax.inject.Inject
 class ContentListAdapter @Inject constructor(
 ) : PagingDataAdapter<Content, ContentListViewHolder>(ContentComparator()) {
 
-    private var itemList: List<String> = listOf("Berker", "Mehmet", "1", "2", "3")
     private var itemClickListener: ((String, View) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContentListViewHolder {
@@ -23,10 +22,10 @@ class ContentListAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: ContentListViewHolder, position: Int) {
-        holder.bind(itemList[position])
+        getItem(position)?.let {
+            holder.bind(it.artistName)
+        }
     }
-
-    override fun getItemCount(): Int = itemList.size
 
     private class ContentComparator : DiffUtil.ItemCallback<Content>() {
         override fun areItemsTheSame(oldItem: Content, newItem: Content) =

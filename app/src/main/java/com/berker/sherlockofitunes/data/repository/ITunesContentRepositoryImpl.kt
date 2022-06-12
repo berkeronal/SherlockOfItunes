@@ -30,7 +30,8 @@ class ITunesContentRepositoryImpl @Inject constructor(
                     api.getContentsBySearch(
                         offset = offset,
                         term = term,
-                        mediaType = mediaType
+                        mediaType = mediaType,
+                        limit = 20
                     ).results.map {
                         domainMapper.dataContentToDomainContent(it)
                     }

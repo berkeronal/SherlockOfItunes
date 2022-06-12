@@ -9,9 +9,12 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
+import com.berker.sherlockofitunes.common.extension.collect
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
+import com.berker.sherlockofitunes.domain.model.Content
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -32,6 +35,8 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     }
 
     override fun initUi() {
+        viewModel.getContent()
+
         initAdapter()
         initRecyclerView()
         postponeEnterTransition()
@@ -41,6 +46,20 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         ViewCompat.setTransitionName(binding.imageView, "imageA")
 
         binding.buttonFirst.setOnClickListener {
+
+        }
+    }
+
+    override fun initReceivers() {
+        super.initReceivers()
+
+        collect(viewModel.contentFlow, ::setRecyclerViewData)
+    }
+
+    private suspend fun setRecyclerViewData(pagingData: PagingData<Content>) {
+        contentListAdapter.submitData(pagingData)
+
+        if (contentListAdapter.itemCount == 0) {
 
         }
     }

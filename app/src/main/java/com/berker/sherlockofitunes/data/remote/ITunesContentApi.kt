@@ -9,17 +9,13 @@ interface ITunesContentApi {
     @GET("search")
     suspend fun getContentsBySearch(
         @Query("term", encoded = true) term: String,
-        @Query("country") country: String = "US",
-        @Query("media") mediaType: String = "all",
-        @Query("entity") entity: String = "all",
-        // @Query("attribute") attribute: String = "all",
+        @Query("media") mediaType: String,
         /**
          * Can't find it in documentation, so i googled it ^^
          * https://stackoverflow.com/a/46707491
          */
         @Query("offset") offset: Int,
-        @Query("limit") limit: Int = 20,
-        @Query("lang") lang: String = "en_us",
+        @Query("limit") limit: Int,
     ): ContentResultDTO
 
     companion object {
