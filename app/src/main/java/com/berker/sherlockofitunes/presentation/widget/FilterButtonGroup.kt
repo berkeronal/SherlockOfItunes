@@ -19,7 +19,8 @@ class FilterButtonGroup @JvmOverloads constructor(
 
     private val layoutParamsWrap = LayoutParams(
         LayoutParams.WRAP_CONTENT,
-        LayoutParams.WRAP_CONTENT
+        LayoutParams.WRAP_CONTENT,
+        0.5f
     )
 
     var changeListener: ((String) -> Unit)? = null
@@ -49,7 +50,6 @@ class FilterButtonGroup @JvmOverloads constructor(
             ).apply {
                 layoutParams = layoutParamsWrap
                 text = content.value
-                weightSum = 0.5f
                 setOnClickListener {
                     setClickListenerWithNullCheck(content.value)
                 }
