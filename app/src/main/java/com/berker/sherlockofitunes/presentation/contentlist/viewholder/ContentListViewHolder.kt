@@ -12,14 +12,19 @@ class ContentListViewHolder(
     private val itemClickListener: ((String, View) -> Unit)?
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(state:ContentItemUiState) = with(binding) {
+    fun bind(state: ContentItemUiState) = with(binding) {
         executeWithAction {
             binding.contentItemUiState = state
         }
-        ViewCompat.setTransitionName(ivRv, state.getArtistName() + bindingAdapterPosition)
-        tv.text = state.getArtistName()
+        ViewCompat.setTransitionName(
+            ivRv,
+            state.artistName + state.collectionName + bindingAdapterPosition
+        )
         root.setOnClickListener {
-            itemClickListener?.invoke(state.getArtistName(), ivRv)
+            itemClickListener?.invoke(state.artistName, ivRv)
+        }
+        cardView.setOnClickListener {
+            itemClickListener?.invoke(state.artistName, ivRv)
         }
     }
 }

@@ -15,7 +15,10 @@ class DomainMapper {
         Content(
             artistId = artistId.replaceIfNull(),
             artistName = artistName.replaceIfNull(),
+            artworkUrl256 = artworkUrl100.replaceIfNull().replace("100x100", "256x256"),
             artworkUrl100 = artworkUrl100.replaceIfNull(),
+            artworkUrl60 = artworkUrl60.replaceIfNull(),
+            artworkUrl30 = artworkUrl30.replaceIfNull(),
             trackCount = trackCount.replaceIfNull(),
             trackExplicitness = trackExplicitness.replaceIfNull(),
             trackId = trackId.replaceIfNull(),
@@ -37,6 +40,19 @@ class DomainMapper {
     fun domainContentToDomainContentItemUiState(
         domainModel: Content
     ) = with(domainModel) {
-        ContentItemUiState(content = domainModel)
+        ContentItemUiState(
+            artistId = artistId,
+            artistName = artistName,
+            artworkUrl256 = artworkUrl256,
+            artworkUrl100 = artworkUrl100,
+            artworkUrl30 = artworkUrl30,
+            artworkUrl60 = artworkUrl60,
+            trackCount = trackCount,
+            trackExplicitness = trackExplicitness,
+            trackId = trackId,
+            collectionName = collectionName,
+            collectionPrice = collectionPrice,
+            releaseDate = releaseDate
+        )
     }
 }

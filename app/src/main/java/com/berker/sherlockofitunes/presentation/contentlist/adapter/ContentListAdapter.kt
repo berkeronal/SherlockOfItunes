@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.berker.sherlockofitunes.databinding.ItemRvContentBinding
-import com.berker.sherlockofitunes.domain.model.Content
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
 import com.berker.sherlockofitunes.presentation.contentlist.viewholder.ContentListViewHolder
 import javax.inject.Inject
@@ -30,7 +29,7 @@ class ContentListAdapter @Inject constructor(
 
     object ContentComparator : DiffUtil.ItemCallback<ContentItemUiState>() {
         override fun areItemsTheSame(oldItem: ContentItemUiState, newItem: ContentItemUiState) =
-            oldItem.getArtistName() == newItem.getArtistName()
+            oldItem.artistName == newItem.artistName && oldItem.trackId == newItem.trackId && oldItem.collectionName == newItem.collectionName
 
         override fun areContentsTheSame(oldItem: ContentItemUiState, newItem: ContentItemUiState) =
             oldItem == newItem

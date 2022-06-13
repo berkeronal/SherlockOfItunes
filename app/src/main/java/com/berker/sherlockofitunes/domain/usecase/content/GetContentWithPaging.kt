@@ -11,7 +11,7 @@ class GetContentWithPaging(
 ) {
 
     operator fun invoke(): Flow<PagingData<Content>> = repository.getContentsByTerm(
-        "berk",
+        "serra",
         "music"
     )
 }
