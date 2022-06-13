@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="contentListUiState"
+            type="com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentListUiState" />
+
+        <variable
             name="adapter"
             type="com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter" />
     </data>
@@ -13,46 +17,36 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/teal_200"
         tools:context=".presentation.contentlist.ContentListFragment">
 
-        <TextView
-            android:id="@+id/textview_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_first_fragment"
-            app:layout_constraintBottom_toTopOf="@id/button_first"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+        <com.berker.sherlockofitunes.presentation.widget.FilterButtonGroup
+            android:id="@+id/filter"
+            android:background="@color/white"
+            checked="@{contentListUiState.contentTypeString}"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/button_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/next"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_first" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:adapter="@{adapter}"
             android:overScrollMode="never"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter"
             tools:listitem="@layout/item_rv_content" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/ic_launcher_foreground"
-            android:transitionName="imageA"
-            app:layout_constraintEnd_toEndOf="@+id/button_first"
-            app:layout_constraintStart_toStartOf="@+id/button_first"
-            app:layout_constraintTop_toBottomOf="@+id/button_first" />
+        <ProgressBar
+            android:id="@+id/pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{contentListUiState.progressBarVisibility}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

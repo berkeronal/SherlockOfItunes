@@ -7,4 +7,5 @@ data class ContentItemUiState(
     private val content: Content
 ) : BaseUiState() {
     fun getArtistName() = content.artistName
+    fun getImageUrl() = content.artworkUrl100
 }

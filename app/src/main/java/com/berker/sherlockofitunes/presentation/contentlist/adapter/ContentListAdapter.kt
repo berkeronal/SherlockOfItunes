@@ -24,7 +24,7 @@ class ContentListAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ContentListViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it.getArtistName())
+            holder.bind(it)
         }
     }
 
