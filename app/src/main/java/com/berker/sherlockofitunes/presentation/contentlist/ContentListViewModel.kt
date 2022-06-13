@@ -42,6 +42,13 @@ class ContentListViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: ContentListUiEvent){
+        when(event){
+            is ContentListUiEvent.OnContentTypeChanged -> TODO()
+            is ContentListUiEvent.OnTermChanged -> TODO()
+        }
+    }
+
     private fun setContent(content: Flow<PagingData<ContentItemUiState>>) {
         _contentListUiState.update { oldState ->
             oldState.copy(contents = content)
