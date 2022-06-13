@@ -17,6 +17,7 @@ import com.berker.sherlockofitunes.common.extension.collectLast
 import com.berker.sherlockofitunes.common.extension.executeWithAction
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
+import com.berker.sherlockofitunes.domain.model.ContentType
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentListUiState
@@ -44,7 +45,21 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         viewModel.getContent()
         initAdapter()
         initRecyclerView()
+        initFilterButtonChangeListener()
         postponeEnterTransition()
+
+    }
+
+    private fun initFilterButtonChangeListener() {
+        binding.filter.changeListener = { clickedText ->
+            val contentType = ContentType.values().filter { it.value == clickedText }
+
+            viewModel.onEvent(
+                ContentListUiEvent.OnContentTypeChanged(
+                    contentType.firstOrNull() ?: ContentType.Movie
+                )
+            )
+        }
     }
 
     override fun initReceivers() {

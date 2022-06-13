@@ -24,7 +24,6 @@ class FilterButtonGroup @JvmOverloads constructor(
     )
 
     var changeListener: ((String) -> Unit)? = null
-    var selected: String = ""
 
     fun setChecked(value: String) {
         binding.toggleGroup.children.forEach {
@@ -35,7 +34,6 @@ class FilterButtonGroup @JvmOverloads constructor(
     }
 
     init {
-
         binding = ViewFilterGroupButtonBinding.inflate(LayoutInflater.from(context), this, false)
         addView(binding.root)
         createButtons()

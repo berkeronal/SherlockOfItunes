@@ -15,4 +15,6 @@ data class ContentListUiState(
 ) : BaseUiState() {
 
     fun getProgressBarVisibility() = getVisibility(isVisible = loadState is LoadState.Loading)
+
+    fun getContentTypeString() = contentType.value
 }
