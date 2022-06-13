@@ -15,7 +15,7 @@ class LocalPagingSource<T : Any>(
                 LoadResult.Page(
                     data = it,
                     prevKey = if (position == STARTING_INDEX) null else position.minus(1),
-                    nextKey = position.plus(1)
+                    nextKey = if (it.isEmpty()) null else position.plus(1)
                 )
             } ?: run {
                 LoadResult.Error(Exception("Error"))

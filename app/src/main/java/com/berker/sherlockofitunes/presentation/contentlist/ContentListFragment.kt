@@ -5,6 +5,7 @@ import android.transition.TransitionInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -59,6 +60,7 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
                     contentType.firstOrNull() ?: ContentType.Movie
                 )
             )
+
         }
     }
 
@@ -72,8 +74,10 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
             }, ::setViewModelLoadState
         )
         collectLast(viewModel.contentListUiState, ::setUiState)
-        collectLast(viewModel.contentListUiState.value.contents, ::setRecyclerViewData)
 
+        binding.etv.addTextChangedListener {
+            viewModel.onEvent(ContentListUiEvent.OnTermChanged(it.toString()))
+        }
 
     }
 
@@ -81,10 +85,12 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         viewModel.setLoadState(loadState)
     }
 
-    private fun setUiState(contentListUiState: ContentListUiState) {
+    private suspend fun setUiState(contentListUiState: ContentListUiState) {
         binding.executeWithAction {
             this.contentListUiState = contentListUiState
+
         }
+        collectLast(contentListUiState.contents, ::setRecyclerViewData)
     }
 
     private suspend fun setRecyclerViewData(pagingData: PagingData<ContentItemUiState>) {
@@ -92,7 +98,6 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
             startPostponedEnterTransition()
         }
         contentListAdapter.submitData(pagingData)
-
 
 
         if (contentListAdapter.itemCount == 0) {
