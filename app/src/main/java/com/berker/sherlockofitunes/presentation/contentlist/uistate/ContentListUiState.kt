@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 data class ContentListUiState(
-    val term: String = "avatar",
-    val contentType: ContentType = ContentType.Music,
+    val term: String = "",
+    val contentType: ContentType = ContentType.Movie,
     val contents: Flow<PagingData<ContentItemUiState>> = emptyFlow(),
     val loadState: LoadState = LoadState.Loading,
     @StringRes val termError: Int? = null

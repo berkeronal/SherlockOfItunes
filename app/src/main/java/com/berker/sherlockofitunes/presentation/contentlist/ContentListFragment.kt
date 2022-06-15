@@ -10,11 +10,13 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
+import com.berker.sherlockofitunes.common.extension.collect
 import com.berker.sherlockofitunes.common.extension.collectLast
 import com.berker.sherlockofitunes.common.extension.executeWithAction
 import com.berker.sherlockofitunes.core.BaseFragment
@@ -65,14 +67,13 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
                     contentType.firstOrNull() ?: ContentType.Movie
                 )
             )
-
         }
     }
 
     override fun initReceivers() {
         super.initReceivers()
 
-        collectLast(contentListAdapter.loadStateFlow
+        collect(contentListAdapter.loadStateFlow
             .distinctUntilChangedBy { it.source.refresh }
             .map {
                 it.refresh
@@ -111,17 +112,34 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
                 navigateWithTransition(root, id, state)
             }
             addLoadStateListener { loadState ->
-                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && itemCount < 1) {
-                    binding.rvContent.isVisible = false
-                    binding.tvContent.isVisible = true
-                } else {
-                    binding.rvContent.isVisible = true
-                    binding.tvContent.isVisible = false
+                with(binding) {
+                    when (decideState(loadState = loadState)) {
+                        SearchState.NO_TYPE -> {
+                            rvContent.isVisible = false
+                            tvContent.isVisible = false
+                            tvStartSearch.isVisible = true
+                        }
+                        SearchState.NO_CONTENT -> {
+                            rvContent.isVisible = false
+                            tvContent.isVisible = true
+                            tvStartSearch.isVisible = false
+                        }
+                        SearchState.CONTENT -> {
+                            rvContent.isVisible = true
+                            tvContent.isVisible = false
+                            tvStartSearch.isVisible = false
+                        }
+                    }
                 }
-
             }
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
+    }
+
+    private fun decideState(loadState: CombinedLoadStates): SearchState {
+        return if (binding.contentListUiState?.term?.isEmpty() == true) SearchState.NO_TYPE
+        else if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && contentListAdapter.itemCount < 1) SearchState.NO_TYPE
+        else SearchState.CONTENT
     }
 
     private fun initRecyclerView() = with(binding) {

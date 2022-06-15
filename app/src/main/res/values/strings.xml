@@ -14,5 +14,6 @@
     <string name="edt_hint">Search Query</string>
     <string name="image">Image</string>
     <string name="search_cant_find_result">There is nothing to show with this search, would you like to try new search?</string>
+    <string name="search_start_searching">Start searching through Itunes Api, start typing to searchBox!</string>
 
 </resources>

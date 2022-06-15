@@ -96,7 +96,8 @@ class ContentListViewModel @Inject constructor(
 
         onUserInputJob?.cancel()
         onUserInputJob = viewModelScope.launch {
-            delay(INPUT_TIME_OUT)
+            delay(INPUT_TIME_OUT / 2)
+
             if (term.length < MIN_SEARCH_SIZE) {
                 _contentListUiState.update { oldState ->
                     oldState.copy(
@@ -106,6 +107,7 @@ class ContentListViewModel @Inject constructor(
                 }
                 return@launch
             }
+            delay(INPUT_TIME_OUT / 2)
 
             if (_contentListUiState.value.getErrorState()) _contentListUiState.update { oldState ->
                 oldState.copy(termError = null)

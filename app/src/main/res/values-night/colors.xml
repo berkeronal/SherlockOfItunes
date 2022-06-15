@@ -8,8 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white_soft">#3BFFFFFF</color>
-    <color name="etv_text">#000000</color>
-    <color name="info_text">#000000</color>
+    <color name="etv_text">#FFFFFFFF</color>
+    <color name="info_text">#9AFFFFFF</color>
     <color name="orange">#FF8A65</color>
     <color name="orange_light">#FFB39C</color>
     <color name="orange_dark">#F86D40</color>

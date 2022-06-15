@@ -28,7 +28,6 @@
             errorVisibility="@{contentListUiState.errorState}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxBackgroundColor="@color/white"
             app:boxStrokeErrorColor="@color/orange_night_dark"
             app:errorEnabled="@{contentListUiState.errorState}"
             app:errorIconTint="@color/orange_night_dark"
@@ -44,10 +43,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
+                android:autofillHints="name"
                 android:hint="@string/edt_hint"
                 android:inputType="text"
                 android:maxLines="1"
-                android:text="@{contentListUiState.term}" />
+                android:text="@{contentListUiState.term}"
+                android:textColor="@color/etv_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.berker.sherlockofitunes.presentation.widget.FilterButtonGroup
@@ -55,16 +56,31 @@
             checked="@{contentListUiState.contentTypeString}"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
             app:layout_constraintTop_toBottomOf="@id/tilHintHolder" />
 
         <TextView
             android:id="@+id/tvContent"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:padding="8dp"
             android:text="@string/search_cant_find_result"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/info_text"
+            android:textSize="30sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fbgMediaType" />
+
+        <TextView
+            android:id="@+id/tvStartSearch"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="8dp"
+            android:text="@string/search_start_searching"
+            android:textAlignment="center"
+            android:textColor="@color/info_text"
             android:textSize="30sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
