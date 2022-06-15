@@ -109,11 +109,11 @@ class ContentListViewModel @Inject constructor(
             }
             delay(INPUT_TIME_OUT / 2)
 
-            if (_contentListUiState.value.getErrorState()) _contentListUiState.update { oldState ->
-                oldState.copy(termError = null)
-            }
             _contentListUiState.update { oldState ->
-                oldState.copy(term = term)
+                oldState.copy(
+                    term = term,
+                    termError = if (_contentListUiState.value.getErrorState()) null else oldState.termError
+                )
             }.also {
                 getContent()
             }
