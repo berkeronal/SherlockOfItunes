@@ -9,7 +9,7 @@ import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemU
 
 class ContentListViewHolder(
     private val binding: ItemRvContentBinding,
-    private val itemClickListener: ((String, View) -> Unit)?
+    private val itemClickListener: ((String, View,ContentItemUiState) -> Unit)?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(state: ContentItemUiState) = with(binding) {
@@ -21,10 +21,10 @@ class ContentListViewHolder(
             state.artistName + state.collectionName + bindingAdapterPosition
         )
         root.setOnClickListener {
-            itemClickListener?.invoke(state.artistName, ivRv)
+            itemClickListener?.invoke(state.artistName, ivRv,state)
         }
         cardView.setOnClickListener {
-            itemClickListener?.invoke(state.artistName, ivRv)
+            itemClickListener?.invoke(state.artistName, ivRv,state)
         }
     }
 }

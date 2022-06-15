@@ -110,8 +110,8 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
 
     private fun initAdapter() {
         contentListAdapter.apply {
-            setItemClickListener { id, view ->
-                navigateWithTransition(view, id)
+            setItemClickListener { id, view, state ->
+                navigateWithTransition(view, id, state)
             }
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
@@ -137,12 +137,17 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     }
 
 
-    private fun navigateWithTransition(view: View, id: String) {
+    private fun navigateWithTransition(view: View, id: String, state: ContentItemUiState) {
+
+        val content = viewModel.getContentByContentListUiState(state)
         val extras = FragmentNavigatorExtras(
             view to "imageB"
         )
         findNavController().navigate(
-            ContentListFragmentDirections.actionContentListFragmentToContentDetailFragment(id),
+            ContentListFragmentDirections.actionContentListFragmentToContentDetailFragment(
+                id,
+                content
+            ),
             extras
         )
     }

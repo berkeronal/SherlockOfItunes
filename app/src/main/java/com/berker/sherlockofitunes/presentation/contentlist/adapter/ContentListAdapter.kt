@@ -19,7 +19,7 @@ class ContentListAdapter @Inject constructor(
         const val DEFAULT_SPAN_SIZE = 2
     }
 
-    private var itemClickListener: ((String, View) -> Unit)? = null
+    private var itemClickListener: ((String, View,ContentItemUiState) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContentListViewHolder {
         val itemBinding =
@@ -41,7 +41,7 @@ class ContentListAdapter @Inject constructor(
             oldItem == newItem
     }
 
-    fun setItemClickListener(listener: (String, View) -> Unit) {
+    fun setItemClickListener(listener: (String, View,ContentItemUiState) -> Unit) {
         itemClickListener = listener
     }
 }

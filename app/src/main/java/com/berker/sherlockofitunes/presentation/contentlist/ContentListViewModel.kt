@@ -1,11 +1,13 @@
 package com.berker.sherlockofitunes.presentation.contentlist
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.berker.sherlockofitunes.core.BaseViewModel
+import com.berker.sherlockofitunes.domain.model.Content
 import com.berker.sherlockofitunes.domain.model.ContentType
 import com.berker.sherlockofitunes.domain.usecase.content.ContentUseCases
 import com.berker.sherlockofitunes.mapper.DomainMapper
@@ -24,13 +26,16 @@ class ContentListViewModel @Inject constructor(
     private val _contentListUiState = MutableStateFlow(ContentListUiState())
     val contentListUiState get() = _contentListUiState.asStateFlow()
 
-    private var oldTerm: String = ""
-    private lateinit var oldType: ContentType
+    private var _contentList: ArrayList<Content> = arrayListOf()
+    val contentList get() = _contentList
+
+    private val oldTerm = MutableLiveData<String>()
+    private val oldType = MutableLiveData<ContentType>()
 
 
     fun getContent() {
         _contentListUiState.value.apply {
-            if (oldTerm == term && oldType == contentType) return
+            if (oldTerm.value == term && oldType.value == contentType) return
         }
 
         val asd = contentUseCases.getContentWithPaging(
@@ -38,12 +43,13 @@ class ContentListViewModel @Inject constructor(
             _contentListUiState.value.contentType
         ).map {
             it.map { content ->
+                _contentList.add(content)
                 domainMapper.domainContentToDomainContentItemUiState(content)
             }
         }.cachedIn(viewModelScope)
 
-        oldTerm = _contentListUiState.value.term
-        oldType = _contentListUiState.value.contentType
+        oldTerm.postValue(_contentListUiState.value.term)
+        oldType.postValue(_contentListUiState.value.contentType)
         setContent(asd)
 
     }
@@ -61,6 +67,15 @@ class ContentListViewModel @Inject constructor(
             is ContentListUiEvent.OnContentTypeChanged -> setContentType(event.value)
             is ContentListUiEvent.OnTermChanged -> setTerm(event.term)
         }
+    }
+
+    fun getContentByContentListUiState(state: ContentItemUiState): Content {
+        return _contentList.find {
+            it.artistName == state.artistName &&
+                    it.artistName == state.artistName &&
+                    it.trackId == state.trackId &&
+                    it.releaseDate == state.releaseDate
+        } ?: _contentList.first()
     }
 
     private fun setTerm(term: String) {

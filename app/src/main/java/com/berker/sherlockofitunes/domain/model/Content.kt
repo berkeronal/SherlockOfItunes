@@ -1,5 +1,9 @@
 package com.berker.sherlockofitunes.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Content(
     val artistId: Int,
     val artistName: String,
@@ -17,4 +21,4 @@ data class Content(
     val collectionName: String,
     val collectionPrice: Double,
     val releaseDate: String,
-)
+) : Parcelable
