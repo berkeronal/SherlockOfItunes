@@ -16,6 +16,7 @@ import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemU
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -105,6 +106,7 @@ class ContentListViewModel @Inject constructor(
                         term = term
                     )
                 }
+                this.cancel()
                 return@launch
             }
             delay(INPUT_TIME_OUT / 2)

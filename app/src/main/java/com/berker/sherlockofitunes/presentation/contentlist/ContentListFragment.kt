@@ -51,7 +51,6 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     }
 
     override fun initUi() {
-        viewModel.getContent()
         initAdapter()
         initRecyclerView()
         initFilterButtonChangeListener()

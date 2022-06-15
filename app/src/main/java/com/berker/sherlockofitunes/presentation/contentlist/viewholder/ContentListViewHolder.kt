@@ -24,7 +24,7 @@ class ContentListViewHolder(
         root.setOnClickListener {
             itemClickListener?.invoke(state.artistName, binding.root, state)
         }
-        cardView.setOnClickListener {
+        cvImageHolder.setOnClickListener {
             itemClickListener?.invoke(state.artistName, binding.root, state)
         }
     }
