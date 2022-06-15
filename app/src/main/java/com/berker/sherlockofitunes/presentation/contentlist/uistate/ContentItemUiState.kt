@@ -22,5 +22,4 @@ data class ContentItemUiState(
     val releaseDate: String,
 ) : BaseUiState() {
 
-    fun getPriceString() = collectionPrice.toString()
 }

@@ -13,6 +13,12 @@ import javax.inject.Inject
 class ContentListAdapter @Inject constructor(
 ) : PagingDataAdapter<ContentItemUiState, ContentListViewHolder>(ContentComparator) {
 
+    companion object{
+        const val ITEM_SIZE = 2
+        const val FOOTER_SIZE = 1
+        const val DEFAULT_SPAN_SIZE = 2
+    }
+
     private var itemClickListener: ((String, View) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContentListViewHolder {
@@ -38,5 +44,4 @@ class ContentListAdapter @Inject constructor(
     fun setItemClickListener(listener: (String, View) -> Unit) {
         itemClickListener = listener
     }
-
 }

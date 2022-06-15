@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.children
-import com.berker.sherlockofitunes.R
 import com.berker.sherlockofitunes.databinding.ViewFilterGroupButtonBinding
 import com.berker.sherlockofitunes.domain.model.ContentType
 import com.google.android.material.button.MaterialButton
@@ -27,9 +26,10 @@ class FilterButtonGroup @JvmOverloads constructor(
 
     fun setChecked(value: String) {
         binding.toggleGroup.children.forEach {
-            if ((it as MaterialButton).text == value) {
-              it.isChecked = true
+            if ((it as MaterialButton).text != value) {
+                return@forEach
             }
+            it.isChecked = true
         }
     }
 
@@ -58,8 +58,6 @@ class FilterButtonGroup @JvmOverloads constructor(
     }
 
     private fun setClickListenerWithNullCheck(value: String) {
-        changeListener?.let { listener ->
-            listener.invoke(value)
-        }
+        changeListener?.invoke(value)
     }
 }

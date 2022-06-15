@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.berker.sherlockofitunes.common.extension.collect
 import com.berker.sherlockofitunes.common.extension.collectLast
@@ -20,6 +21,10 @@ import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
 import com.berker.sherlockofitunes.domain.model.ContentType
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
+import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter.Companion.DEFAULT_SPAN_SIZE
+import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter.Companion.FOOTER_SIZE
+import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter.Companion.ITEM_SIZE
+import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListFooterAdapter
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentListUiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,11 +53,10 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         initRecyclerView()
         initFilterButtonChangeListener()
         postponeEnterTransition()
-
     }
 
     private fun initFilterButtonChangeListener() {
-        binding.filter.changeListener = { clickedText ->
+        binding.fbgMediaType.changeListener = { clickedText ->
             val contentType = ContentType.values().filter { it.value == clickedText }
 
             viewModel.onEvent(
@@ -75,7 +79,7 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         )
         collectLast(viewModel.contentListUiState, ::setUiState)
 
-        binding.etv.addTextChangedListener {
+        binding.etvTerm.addTextChangedListener {
             viewModel.onEvent(ContentListUiEvent.OnTermChanged(it.toString()))
         }
 
@@ -88,7 +92,6 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     private suspend fun setUiState(contentListUiState: ContentListUiState) {
         binding.executeWithAction {
             this.contentListUiState = contentListUiState
-
         }
         collectLast(contentListUiState.contents, ::setRecyclerViewData)
     }
@@ -114,12 +117,25 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         }
     }
 
-    private fun initRecyclerView() {
-        binding.adapter = contentListAdapter
+    private fun initRecyclerView() = with(binding) {
+        adapter =
+            contentListAdapter.withLoadStateFooter(
+                ContentListFooterAdapter(
+                    contentListAdapter::retry
+                )
+            )
 
-        val layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rv.layoutManager = layoutManager
+        val layoutManager = GridLayoutManager(requireContext(), DEFAULT_SPAN_SIZE).apply {
+            spanSizeLookup = object : SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+
+                    return if (contentListAdapter.itemCount > position) FOOTER_SIZE else ITEM_SIZE
+                }
+            }
+        }
+        rvContent.layoutManager = layoutManager
     }
+
 
     private fun navigateWithTransition(view: View, id: String) {
         val extras = FragmentNavigatorExtras(

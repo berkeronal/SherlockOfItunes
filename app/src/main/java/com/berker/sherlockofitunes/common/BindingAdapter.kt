@@ -1,5 +1,6 @@
 package com.berker.sherlockofitunes.common
 
+import android.annotation.SuppressLint
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -26,22 +27,23 @@ fun ImageView.setContentImage(url: String?) {
         .into(this)
 }
 
+@SuppressLint("SimpleDateFormat")
 @BindingAdapter("releaseDate")
 fun TextView.setReleaseDate(value: String) {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-    var convertedDate = Date()
+    val convertedDate: Date?
     try {
         convertedDate = dateFormat.parse(value)
-        val sdfnewformat = SimpleDateFormat("MMM dd yyyy")
-        val finalDateString = sdfnewformat.format(convertedDate)
+        val sdfNewFormat = SimpleDateFormat("MMM dd yyyy")
+        val finalDateString = convertedDate?.let { sdfNewFormat.format(it) }
         text = finalDateString
 
     } catch (e: ParseException) {
-        text = "Error While Formatting Date"
+        text = context.resources.getText(R.string.error_date)
     }
 }
 
 @BindingAdapter("setPrice")
-fun TextView.setPrice(value: String){
-    text = "$ $value"
+fun TextView.setPrice(value: Double){
+    text = context.resources.getString(R.string.text_with_dollar_symbol, 2.5)
 }
