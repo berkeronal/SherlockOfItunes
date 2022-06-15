@@ -1,6 +1,5 @@
 package com.berker.sherlockofitunes.presentation.contentlist
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -25,8 +24,15 @@ class ContentListViewModel @Inject constructor(
     private val _contentListUiState = MutableStateFlow(ContentListUiState())
     val contentListUiState get() = _contentListUiState.asStateFlow()
 
+    private var oldTerm: String = ""
+    private lateinit var oldType: ContentType
+
 
     fun getContent() {
+        _contentListUiState.value.apply {
+            if (oldTerm == term && oldType == contentType) return
+        }
+
         val asd = contentUseCases.getContentWithPaging(
             _contentListUiState.value.term,
             _contentListUiState.value.contentType
@@ -36,6 +42,8 @@ class ContentListViewModel @Inject constructor(
             }
         }.cachedIn(viewModelScope)
 
+        oldTerm = _contentListUiState.value.term
+        oldType = _contentListUiState.value.contentType
         setContent(asd)
 
     }
