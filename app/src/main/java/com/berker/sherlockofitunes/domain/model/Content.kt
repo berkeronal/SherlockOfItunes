@@ -22,4 +22,8 @@ data class Content(
     val collectionPrice: Double,
     val releaseDate: String,
     val longDescription: String?,
-) : Parcelable
+    val trackViewUrl: String?,
+    val previewUrl: String?,
+    val collectionViewUrl: String?,
+
+    ) : Parcelable

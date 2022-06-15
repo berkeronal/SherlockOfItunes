@@ -25,7 +25,10 @@ class DomainMapper {
             collectionName = collectionName.replaceIfNull(),
             collectionPrice = collectionPrice.replaceIfNull(),
             releaseDate = releaseDate.replaceIfNull(),
-            longDescription = longDescription.replaceIfNull()
+            longDescription = longDescription.replaceIfNull(),
+            trackViewUrl = trackViewUrl.replaceIfNull(),
+            previewUrl  = previewUrl.replaceIfNull(),
+            collectionViewUrl = collectionViewUrl.replaceIfNull(),
         )
     }
 
@@ -53,7 +56,10 @@ class DomainMapper {
             trackId = trackId,
             collectionName = collectionName,
             collectionPrice = collectionPrice,
-            releaseDate = releaseDate
+            releaseDate = releaseDate,
+            trackViewUrl = trackViewUrl.replaceIfNull(),
+            previewUrl  = previewUrl.replaceIfNull(),
+            collectionViewUrl = collectionViewUrl.replaceIfNull(),
         )
     }
 }

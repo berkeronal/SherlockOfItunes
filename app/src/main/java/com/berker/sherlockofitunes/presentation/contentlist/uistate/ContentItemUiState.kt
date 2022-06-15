@@ -20,6 +20,9 @@ data class ContentItemUiState(
     val collectionName: String,
     val collectionPrice: Double,
     val releaseDate: String,
+    val trackViewUrl: String?,
+    val previewUrl: String?,
+    val collectionViewUrl: String?,
 ) : BaseUiState() {
 
 }
