@@ -21,4 +21,5 @@ data class Content(
     val collectionName: String,
     val collectionPrice: Double,
     val releaseDate: String,
+    val longDescription: String?,
 ) : Parcelable

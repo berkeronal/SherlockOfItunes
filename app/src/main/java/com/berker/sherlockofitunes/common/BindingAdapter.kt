@@ -3,16 +3,18 @@ package com.berker.sherlockofitunes.common
 import android.annotation.SuppressLint
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
 import com.berker.sherlockofitunes.R
 import com.berker.sherlockofitunes.presentation.widget.FilterButtonGroup
 import com.bumptech.glide.Glide
+import com.google.android.material.textfield.TextInputLayout
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 @BindingAdapter("checked")
-fun FilterButtonGroup.setChecked(value: String) {
+fun FilterButtonGroup.setCheckedCustom(value: String) {
     setChecked(value)
 }
 
@@ -44,6 +46,13 @@ fun TextView.setReleaseDate(value: String) {
 }
 
 @BindingAdapter("setPrice")
-fun TextView.setPrice(value: Double){
-    text = context.resources.getString(R.string.text_with_dollar_symbol, 2.5)
+fun TextView.setPrice(value: Double) {
+    text = context.resources.getString(R.string.text_with_dollar_symbol, value)
+}
+
+@BindingAdapter(value = ["errorVisibility", "errorMessage"], requireAll = true)
+fun TextInputLayout.setErrorWithState(visibility: Boolean, @StringRes messageId: Int) {
+    if (visibility) this.error = context.resources.getText(messageId) else this.isErrorEnabled =
+        false
+
 }

@@ -24,7 +24,8 @@ class DomainMapper {
             trackId = trackId.replaceIfNull(),
             collectionName = collectionName.replaceIfNull(),
             collectionPrice = collectionPrice.replaceIfNull(),
-            releaseDate = releaseDate.replaceIfNull()
+            releaseDate = releaseDate.replaceIfNull(),
+            longDescription = longDescription.replaceIfNull()
         )
     }
 

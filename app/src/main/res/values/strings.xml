@@ -9,6 +9,10 @@
 
     <string name="btn_retry">Retry</string>
     <string name="error_date">"Error While Formatting Date"</string>
+    <string name="error_term">"Minimum search length must be '3' character"</string>
     <string name="text_with_dollar_symbol">$ %.1f</string>
+    <string name="edt_hint">Search Query</string>
+    <string name="image">Image</string>
+    <string name="search_cant_find_result">There is nothing to show with this search, would you like to try new search?</string>
 
 </resources>

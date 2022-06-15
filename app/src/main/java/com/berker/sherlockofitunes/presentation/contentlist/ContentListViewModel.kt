@@ -6,6 +6,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.berker.sherlockofitunes.R
 import com.berker.sherlockofitunes.core.BaseViewModel
 import com.berker.sherlockofitunes.domain.model.Content
 import com.berker.sherlockofitunes.domain.model.ContentType
@@ -14,7 +15,10 @@ import com.berker.sherlockofitunes.mapper.DomainMapper
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentItemUiState
 import com.berker.sherlockofitunes.presentation.contentlist.uistate.ContentListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,8 +33,15 @@ class ContentListViewModel @Inject constructor(
     private var _contentList: ArrayList<Content> = arrayListOf()
     val contentList get() = _contentList
 
+    private var onUserInputJob: Job? = null
+
     private val oldTerm = MutableLiveData<String>()
     private val oldType = MutableLiveData<ContentType>()
+
+    companion object {
+        const val INPUT_TIME_OUT = 500L
+        const val MIN_SEARCH_SIZE = 3
+    }
 
 
     fun getContent() {
@@ -38,7 +49,7 @@ class ContentListViewModel @Inject constructor(
             if (oldTerm.value == term && oldType.value == contentType) return
         }
 
-        val asd = contentUseCases.getContentWithPaging(
+        val response = contentUseCases.getContentWithPaging(
             _contentListUiState.value.term,
             _contentListUiState.value.contentType
         ).map {
@@ -50,8 +61,7 @@ class ContentListViewModel @Inject constructor(
 
         oldTerm.postValue(_contentListUiState.value.term)
         oldType.postValue(_contentListUiState.value.contentType)
-        setContent(asd)
-
+        setContent(response)
     }
 
     fun setLoadState(loadState: LoadState) {
@@ -79,10 +89,32 @@ class ContentListViewModel @Inject constructor(
     }
 
     private fun setTerm(term: String) {
-        _contentListUiState.update { oldState ->
-            oldState.copy(term = term)
-        }.also {
-            getContent()
+        if (oldTerm.value == term) {
+            onUserInputJob?.cancel()
+            return
+        }
+
+        onUserInputJob?.cancel()
+        onUserInputJob = viewModelScope.launch {
+            delay(INPUT_TIME_OUT)
+            if (term.length < MIN_SEARCH_SIZE) {
+                _contentListUiState.update { oldState ->
+                    oldState.copy(
+                        termError = R.string.error_term,
+                        term = term
+                    )
+                }
+                return@launch
+            }
+
+            if (_contentListUiState.value.getErrorState()) _contentListUiState.update { oldState ->
+                oldState.copy(termError = null)
+            }
+            _contentListUiState.update { oldState ->
+                oldState.copy(term = term)
+            }.also {
+                getContent()
+            }
         }
     }
 

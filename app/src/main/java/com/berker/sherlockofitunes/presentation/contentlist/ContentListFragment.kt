@@ -5,6 +5,7 @@ import android.transition.TransitionInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -14,12 +15,12 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
-import com.berker.sherlockofitunes.common.extension.collect
 import com.berker.sherlockofitunes.common.extension.collectLast
 import com.berker.sherlockofitunes.common.extension.executeWithAction
 import com.berker.sherlockofitunes.core.BaseFragment
 import com.berker.sherlockofitunes.databinding.FragmentContentListBinding
 import com.berker.sherlockofitunes.domain.model.ContentType
+import com.berker.sherlockofitunes.presentation.contentdetail.ContentDetailFragment.Companion.SHARED_REFERENCE
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter.Companion.DEFAULT_SPAN_SIZE
 import com.berker.sherlockofitunes.presentation.contentlist.adapter.ContentListAdapter.Companion.FOOTER_SIZE
@@ -71,7 +72,7 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
     override fun initReceivers() {
         super.initReceivers()
 
-        collect(contentListAdapter.loadStateFlow
+        collectLast(contentListAdapter.loadStateFlow
             .distinctUntilChangedBy { it.source.refresh }
             .map {
                 it.refresh
@@ -93,6 +94,7 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         binding.executeWithAction {
             this.contentListUiState = contentListUiState
         }
+        binding.etvTerm.setSelection(contentListUiState.term.length)
         collectLast(contentListUiState.contents, ::setRecyclerViewData)
     }
 
@@ -101,17 +103,22 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
             startPostponedEnterTransition()
         }
         contentListAdapter.submitData(pagingData)
-
-
-        if (contentListAdapter.itemCount == 0) {
-
-        }
     }
 
     private fun initAdapter() {
         contentListAdapter.apply {
-            setItemClickListener { id, view, state ->
-                navigateWithTransition(view, id, state)
+            setItemClickListener { id, root, state ->
+                navigateWithTransition(root, id, state)
+            }
+            addLoadStateListener { loadState ->
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && itemCount < 1) {
+                    binding.rvContent.isVisible = false
+                    binding.tvContent.isVisible = true
+                } else {
+                    binding.rvContent.isVisible = true
+                    binding.tvContent.isVisible = false
+                }
+
             }
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
@@ -136,17 +143,20 @@ class ContentListFragment : BaseFragment<FragmentContentListBinding, ContentList
         rvContent.layoutManager = layoutManager
     }
 
-
-    private fun navigateWithTransition(view: View, id: String, state: ContentItemUiState) {
+    private fun navigateWithTransition(
+        root: View,
+        id: String,
+        state: ContentItemUiState
+    ) {
 
         val content = viewModel.getContentByContentListUiState(state)
         val extras = FragmentNavigatorExtras(
-            view to "imageB"
+            root to SHARED_REFERENCE
         )
         findNavController().navigate(
             ContentListFragmentDirections.actionContentListFragmentToContentDetailFragment(
-                id,
-                content
+                sharedElementName = id,
+                contentModel = content
             ),
             extras
         )

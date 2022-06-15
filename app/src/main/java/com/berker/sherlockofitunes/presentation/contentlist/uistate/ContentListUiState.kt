@@ -1,5 +1,6 @@
 package com.berker.sherlockofitunes.presentation.contentlist.uistate
 
+import androidx.annotation.StringRes
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.berker.sherlockofitunes.core.BaseUiState
@@ -12,7 +13,10 @@ data class ContentListUiState(
     val contentType: ContentType = ContentType.Music,
     val contents: Flow<PagingData<ContentItemUiState>> = emptyFlow(),
     val loadState: LoadState = LoadState.Loading,
+    @StringRes val termError: Int? = null
 ) : BaseUiState() {
+
+    fun getErrorState():Boolean = termError != null
 
     fun getProgressBarVisibility() = getVisibility(isVisible = loadState is LoadState.Loading)
 
